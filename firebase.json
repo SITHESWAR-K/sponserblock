@@ -1,0 +1,23 @@
+{
+  "hosting": {
+    "site": "sponsorblockyt",
+    "public": "website",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "headers": [
+      {
+        "source": "/downloads/**",
+        "headers": [
+          {
+            "key": "Content-Disposition",
+            "value": "attachment"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI SponsorBlock</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-container">
+    <header class="header">
+      <div class="brand">
+        <span class="brand-icon">⚡</span>
+        <div>
+          <h1 class="brand-title">AI SponsorBlock</h1>
+          <span class="brand-subtitle">Groq qwen/qwen3.8-27b + Supabase</span>
+        </div>
+      </div>
+      <span id="status-badge" class="badge badge-idle">Idle</span>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-value" id="stat-skipped">0</span>
+        <span class="stat-label">Skipped</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-saved">0s</span>
+        <span class="stat-label">Time Saved</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-analyzed">0</span>
+        <span class="stat-label">AI Scanned</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">Current Video Segments</h2>
+        <button id="btn-reanalyze" class="btn-small" title="Force fresh Groq AI scan">
+          ↻ Re-scan
+        </button>
+      </div>
+      <div id="video-meta" class="video-meta">Open a YouTube video to detect sponsors.</div>
+      <div id="segments-list" class="segments-list"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="card-title">Settings</h2>
+      <label class="toggle-row">
+        <span>Auto-Skip High Confidence Sponsors</span>
+        <input type="checkbox" id="toggle-autoskip" checked />
+      </label>
+      <label class="toggle-row">
+        <span>SponsorBlock Crowdsourced Fallback</span>
+        <input type="checkbox" id="toggle-sb-fallback" checked />
+      </label>
+      <label class="toggle-row">
+        <span>Skip Creator Self-Promotions</span>
+        <input type="checkbox" id="toggle-selfpromo" checked />
+      </label>
+
+      <div class="input-group">
+        <div class="input-header">
+          <label for="input-backend-url">Backend API Endpoint</label>
+          <div class="preset-btns">
+            <button type="button" id="btn-preset-cloud" class="btn-chip">Supabase Cloud</button>
+            <button type="button" id="btn-preset-local" class="btn-chip">Local :3001</button>
+          </div>
+        </div>
+        <input
+          type="text"
+          id="input-backend-url"
+          class="text-input"
+          placeholder="https://yayhcowmesmjccjelmuf.supabase.co/functions/v1/analyze-video"
+        />
+      </div>
+    </section>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

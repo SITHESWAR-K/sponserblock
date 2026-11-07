@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — AI SponsorBlock for YouTube™</title>
+  <link rel="icon" type="image/png" href="assets/icon-32.png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .legal-container {
+      max-width: 820px;
+      margin: 110px auto 60px;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+    .legal-container h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .legal-meta {
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .legal-container h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 32px 0 12px;
+      color: #ede9fe;
+    }
+    .legal-container p, .legal-container li {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .legal-container strong {
+      color: var(--text-primary);
+    }
+    .legal-container ul {
+      padding-left: 24px;
+      margin-bottom: 20px;
+    }
+    .legal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 28px;
+    }
+    .legal-table th, .legal-table td {
+      border: 1px solid var(--border-subtle);
+      padding: 12px 14px;
+      text-align: left;
+    }
+    .legal-table th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .legal-table td:first-child {
+      color: #fbbf24;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+    .disclaimer-box {
+      margin-top: 40px;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand">
+        <img src="assets/icon-32.png" alt="AI SponsorBlock" class="brand-icon" />
+        <span>AI SponsorBlock</span>
+      </a>
+
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-secondary btn-sm">← Back to Overview</a>
+        <a href="https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf" target="_blank" rel="noopener noreferrer" class="btn btn-edge btn-sm">
+          Edge Add-on
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="legal-container">
+    <h1>Privacy Policy for AI SponsorBlock for YouTube™</h1>
+    <div class="legal-meta">Last Updated: March 2025 • Policy Version 1.0</div>
+
+    <p>This Privacy Policy explains how <strong>AI SponsorBlock for YouTube™</strong> ("the Extension", "we", "us", or "our") collects, uses, and safeguards information when you use our browser extension and visit our web portal at <code>sponsorblockyt.web.app</code>.</p>
+
+    <h2>1. Core Privacy Principle</h2>
+    <ul>
+      <li>We <strong>do not</strong> collect personal identifiable information (PII).</li>
+      <li>We <strong>do not</strong> track your personal browsing history, search history, or general web activity.</li>
+      <li>We <strong>do not</strong> monetize, sell, rent, or trade any user data to advertising networks, analytics brokers, or data brokers.</li>
+      <li>We <strong>do not</strong> require an account, email address, password, or login to use the extension.</li>
+    </ul>
+
+    <h2>2. Technical Data Processed by the Extension</h2>
+    <p>To detect and skip sponsorships inside YouTube videos, the extension accesses the following technical data:</p>
+    <ul>
+      <li><strong>Public YouTube Video Identifier & Captions:</strong> The extension extracts the public YouTube Video ID and public closed caption cues/transcript directly from the YouTube HTML5 player. These captions are processed by our Groq AI backend to pinpoint sponsorship timestamps. Results are cached in Supabase PostgreSQL so subsequent viewers don't need to re-scan.</li>
+      <li><strong>Local Extension Storage (<code>chrome.storage.local</code>):</strong> Stores user preferences (e.g. auto-skip enabled, skip self-promos) and local aggregate counters (number of sponsors skipped, seconds saved). This data resides exclusively in your browser profile on your device.</li>
+      <li><strong>Community Feedback (Optional):</strong> If you click "Undo & Report", an anonymous report is submitted to Supabase to adjust community confidence and suppress bad detections.</li>
+    </ul>
+
+    <h2>3. Permissions Used and Technical Justification</h2>
+    <table class="legal-table">
+      <thead>
+        <tr>
+          <th>Permission</th>
+          <th>Technical Purpose & Justification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>storage</td>
+          <td>Saves user settings and local time-saved statistics locally on your device.</td>
+        </tr>
+        <tr>
+          <td>tabs</td>
+          <td>Used strictly upon installation/update to detect active YouTube tabs and initialize the skip overlay without requiring a full page refresh.</td>
+        </tr>
+        <tr>
+          <td>scripting</td>
+          <td>Injects the player overlay styles and caption reader into YouTube video pages.</td>
+        </tr>
+        <tr>
+          <td>*://*.youtube.com/*</td>
+          <td>Required to read public video captions and render the skip overlay on YouTube video players.</td>
+        </tr>
+        <tr>
+          <td>https://sponsorblock.ajay.app/*</td>
+          <td>Queries crowdsourced sponsor segments fallback.</td>
+        </tr>
+        <tr>
+          <td>https://yayhcowmesmjccjelmuf.supabase.co/*</td>
+          <td>Queries cached sponsor timestamps and stores AI-analyzed segments in Supabase.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Third-Party Services</h2>
+    <p>When analyzing video transcripts, the extension interacts strictly with encrypted HTTPS APIs:</p>
+    <ul>
+      <li><strong>Supabase:</strong> For cloud caching of video timestamps and community votes.</li>
+      <li><strong>Groq Cloud API:</strong> For AI inference using Qwen 3.8 27B model on public video transcripts.</li>
+      <li><strong>SponsorBlock API:</strong> For fallback community segment lookups.</li>
+    </ul>
+
+    <h2>5. Contact & Support</h2>
+    <p>If you have questions regarding this Privacy Policy, please open an issue on our GitHub repository or contact the developer.</p>
+
+    <div class="disclaimer-box">
+      Disclaimer: AI SponsorBlock is an independent open-source project and is not affiliated with, endorsed by, or sponsored by YouTube™, Google LLC, or Microsoft Corporation.
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a href="index.html" class="footer-brand">
+        <img src="assets/icon-32.png" alt="AI SponsorBlock" width="20" height="20" style="border-radius: 4px;" />
+        <span>AI SponsorBlock</span>
+      </a>
+      <div class="footer-nav">
+        <a href="index.html">Overview</a>
+        <a href="https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf" target="_blank" rel="noopener noreferrer">Edge Store Listing</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI SponsorBlock — Instant YouTube Sponsorship Blocker</title>
+  <meta name="description" content="Automatically detect and skip creator sponsorships in YouTube videos using Groq AI caption analysis, Supabase shared caching, and SponsorBlock." />
+  <link rel="icon" type="image/png" href="assets/icon-32.png" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    window.__ytReady = false;
+    function onYouTubeIframeAPIReady() {
+      window.__ytReady = true;
+      if (typeof window.__initRealYouTube === 'function') {
+        window.__initRealYouTube();
+      }
+    }
+  </script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+  <!-- Subtle Texture -->
+  <div class="bg-grid"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <img src="assets/icon-32.png" alt="AI SponsorBlock" class="brand-icon" />
+        <span>AI SponsorBlock</span>
+        <span class="brand-badge">Manifest V3</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="#how-it-works" class="nav-link">How it works</a></li>
+        <li><a href="#demo" class="nav-link">Player simulator</a></li>
+        <li><a href="#playground" class="nav-link">AI playground</a></li>
+        <li><a href="#architecture" class="nav-link">Architecture</a></li>
+        <li><a href="#install" class="nav-link">Install</a></li>
+        <li><a href="#faq" class="nav-link">FAQ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf" target="_blank" rel="noopener noreferrer" class="btn btn-edge btn-sm">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M0 12.357c.046 6.368 5.158 11.536 11.528 11.643 6.474.11 11.954-4.887 12.39-11.341.04-.58-.396-1.077-.978-1.11-.58-.032-1.077.397-1.11.977-.384 5.67-5.19 10.05-10.887 9.954-5.59-.094-10.08-4.636-10.12-10.228-.04-5.69 4.49-10.354 10.18-10.457 4.542-.083 8.358 2.68 9.92 6.643.21.53.81.79 1.34.58.53-.21.79-.81.58-1.34C20.94 3.12 16.51-.1 11.442.002 5.093.13-.047 5.927 0 12.357z"/>
+          </svg>
+          Get on Edge
+        </a>
+        <a href="downloads/ai-sponsorblock-edge.zip" download class="btn btn-secondary btn-sm">
+          <span>↓</span> .ZIP
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-pill">
+          <span class="pill-dot"></span>
+          <span>Zero-day protection via Groq (qwen/qwen3.8-27b) + Supabase Edge</span>
+        </div>
+
+        <h1 class="hero-title">
+          Skip YouTube creator sponsors <br />
+          <span class="highlight">the second a video is uploaded.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Crowdsourced blockers force you to sit through sponsor reads until another viewer manually marks the timestamps. AI SponsorBlock parses the video's live caption stream, identifies sponsor boundaries with Groq AI in 800ms, and auto-skips them for everyone.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf" target="_blank" rel="noopener noreferrer" class="btn btn-edge btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M0 12.357c.046 6.368 5.158 11.536 11.528 11.643 6.474.11 11.954-4.887 12.39-11.341.04-.58-.396-1.077-.978-1.11-.58-.032-1.077.397-1.11.977-.384 5.67-5.19 10.05-10.887 9.954-5.59-.094-10.08-4.636-10.12-10.228-.04-5.69 4.49-10.354 10.18-10.457 4.542-.083 8.358 2.68 9.92 6.643.21.53.81.79 1.34.58.53-.21.79-.81.58-1.34C20.94 3.12 16.51-.1 11.442.002 5.093.13-.047 5.927 0 12.357z"/>
+            </svg>
+            Install from Edge Add-ons Store
+          </a>
+          <a href="downloads/ai-sponsorblock-edge.zip" download class="btn btn-secondary btn-lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download .ZIP (Load Unpacked)
+          </a>
+        </div>
+
+        <div class="hero-badges-row">
+          <div class="badge-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Verified Microsoft Edge Store Add-on</span>
+          </div>
+          <div class="badge-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Zero Account Required</span>
+          </div>
+          <div class="badge-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Open Source & Privacy-First</span>
+          </div>
+        </div>
+
+        <!-- Telemetry Metrics -->
+        <div class="metrics-strip">
+          <div class="metric-cell">
+            <div class="metric-val mono">&lt; 150<span>ms</span></div>
+            <div class="metric-label">Supabase cloud cache response for previously analyzed videos</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-val mono">&lt; 850<span>ms</span></div>
+            <div class="metric-label">Cold-start caption parsing and Groq AI inference speed</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-val mono">&ge; 80<span>%</span></div>
+            <div class="metric-label">High-confidence threshold required before triggering automated skip</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-val mono">3 <span>votes</span></div>
+            <div class="metric-label">Downvote threshold that permanently auto-hides an incorrect segment</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive YouTube Player Simulator -->
+    <!-- Real YouTube Player Simulator -->
+    <section id="demo" class="container">
+      <div class="section-header">
+        <div class="section-tag">Live Demonstration on Real YouTube Videos</div>
+        <h2 class="section-title">Watch real YouTube videos skip live</h2>
+        <p class="section-desc">
+          Test real embedded YouTube videos. When playback hits the sponsor read, observe how the player automatically jumps ahead and displays the skip notification.
+        </p>
+      </div>
+
+      <div class="player-wrapper">
+        <!-- Preset Video Selector Bar -->
+        <div class="player-preset-bar">
+          <div class="preset-video-group">
+            <span style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Select Real Video:</span>
+            <button class="preset-video-btn active" data-vid="ESyiQ0tfqFQ" data-sponsor="dbrand" data-start="59" data-end="76">
+              <span>📹</span> Linus Tech Tips (dbrand @ 00:59)
+            </button>
+            <button class="preset-video-btn" data-vid="DRLIs76-C7M" data-sponsor="Ridge Wallet" data-start="238" data-end="300">
+              <span>📹</span> Linus Tech Tips (Ridge @ 03:58)
+            </button>
+            <button class="preset-video-btn" data-vid="0e3GPea1Tyg" data-sponsor="Brawl Stars" data-start="861" data-end="946">
+              <span>📹</span> MrBeast — Squid Game (Brawl Stars @ 14:21)
+            </button>
+            <button class="preset-video-btn" data-vid="094y1Z2wpJg" data-sponsor="Brilliant.org" data-start="1241" data-end="1328">
+              <span>📹</span> Veritasium (Brilliant @ 20:41)
+            </button>
+            <button class="preset-video-btn" id="btn-toggle-custom-url">
+              <span>🔗</span> Custom URL...
+            </button>
+          </div>
+
+          <!-- Mode Toggle -->
+          <div class="simulation-toggle">
+            <button id="mode-with-ai" class="sim-btn active amber-mode">⚡ With AI SponsorBlock</button>
+            <button id="mode-without-ai" class="sim-btn">Without Extension</button>
+          </div>
+        </div>
+
+        <!-- Custom Video URL Input Bar (Collapsible) -->
+        <div class="custom-url-bar" id="custom-url-bar">
+          <input type="text" id="custom-video-input" class="custom-url-input" placeholder="Paste any YouTube URL or Video ID (e.g. https://www.youtube.com/watch?v=0e3GPea1Tyg)" />
+          <button class="btn btn-outline-amber btn-sm" id="btn-load-custom-video">Load Video</button>
+        </div>
+
+        <!-- Real YouTube IFrame Screen Area -->
+        <div class="yt-screen">
+          <!-- The Real YouTube Player Iframe -->
+          <div class="yt-iframe-container" id="yt-real-player-container">
+            <div id="yt-real-iframe"></div>
+          </div>
+
+          <!-- Loading Cover (fades out when video is ready) -->
+          <div class="yt-loading-cover" id="yt-loading-cover">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" class="spin-icon">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </svg>
+            <span>Connecting to YouTube stream...</span>
+          </div>
+
+          <!-- Click-to-Play Overlay (solves browser autoplay restriction) -->
+          <div class="yt-play-overlay" id="yt-play-overlay">
+            <div class="yt-play-overlay-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span>Click to Play & Watch Auto-Skip</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #a1a1aa; margin-top: 10px;">
+              Loads 5s before sponsor • Watch AI jump ahead automatically
+            </div>
+          </div>
+
+          <!-- Dynamic Status Pill -->
+          <div class="player-status-pill" id="player-status-pill">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Ready • Click Play or Jump to Test</span>
+          </div>
+
+          <!-- Audio / Unmute Toggle Pill -->
+          <button class="player-audio-pill" id="player-audio-pill" title="Toggle audio">
+            <span id="audio-icon">🔊</span>
+            <span id="audio-text">Audio On</span>
+          </button>
+
+          <!-- Authentic YouTube Skip Toast -->
+          <div class="yt-skip-toast" id="yt-skip-toast">
+            <span class="toast-tag">AI SKIP</span>
+            <div class="toast-body">
+              <div class="toast-title" id="toast-sponsor-title">Skipped dbrand</div>
+              <div class="toast-time" id="toast-sponsor-time">00:59 → 01:16 (17s saved)</div>
+            </div>
+            <button class="toast-undo-btn" id="yt-toast-undo">Undo & Report</button>
+          </div>
+        </div>
+
+        <!-- Real YouTube Scrubber & Telemetry Controls -->
+        <div class="real-yt-controls">
+          <div class="real-yt-scrubber-wrap">
+            <div class="scrubber-meta-row">
+              <span id="real-yt-time" class="mono">00:54 / 20:28</span>
+              <div class="sponsor-legend">
+                <span class="sponsor-dot"></span>
+                <span id="real-yt-sponsor-legend-text">Sponsor Segment: dbrand (00:59 → 01:16)</span>
+              </div>
+            </div>
+
+            <!-- Custom Timeline Track -->
+            <div class="real-yt-track" id="real-yt-track">
+              <!-- Amber Sponsor Segment Highlight -->
+              <div class="real-yt-sponsor-segment" id="real-yt-sponsor-segment" style="left: 4.8%; width: 1.4%;"></div>
+              <div class="real-yt-played" id="real-yt-played"></div>
+              <div class="real-yt-thumb" id="real-yt-thumb"></div>
+            </div>
+          </div>
+
+          <div class="real-yt-action-bar">
+            <div class="action-buttons-group">
+              <button class="btn btn-secondary btn-sm" id="real-yt-play-btn">
+                <span id="play-btn-icon">▶</span> <span id="play-btn-label">Play Video</span>
+              </button>
+              <button class="btn btn-outline-amber btn-sm" id="real-yt-test-jump-btn">
+                <span>⚡</span> Jump to 5s Before Sponsor
+              </button>
+            </div>
+
+            <div style="font-size: 0.78rem; color: var(--text-tertiary); font-family: var(--font-mono);">
+              <span>Target: </span><span style="color: #fbbf24;" id="real-yt-sponsor-target">00:59 — dbrand (17s)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Problem (Cold Start Gap) -->
+    <section id="how-it-works" class="coldstart-section container">
+      <div class="section-header">
+        <div class="section-tag">The Cold-Start Problem</div>
+        <h2 class="section-title">Why traditional crowdsourcing leaves you exposed</h2>
+        <p class="section-desc">
+          Community-driven databases work well for viral videos from three months ago. They fail completely on the videos you actually watch every day.
+        </p>
+      </div>
+
+      <div class="coldstart-grid">
+        <div class="coldstart-card">
+          <span class="card-badge gray">Traditional SponsorBlock</span>
+          <h3 class="card-title">100% Volunteer Dependent</h3>
+          <p class="card-desc">
+            A human being has to watch the video, open the submission editor, find the exact frame where the sponsor starts, and click submit.
+          </p>
+          <ul class="coldstart-features">
+            <li>
+              <span class="bullet-cross">✕</span>
+              <span><strong>First 2-6 hours are unprotected:</strong> You are guaranteed to hear the sponsor pitch on freshly uploaded content.</span>
+            </li>
+            <li>
+              <span class="bullet-cross">✕</span>
+              <span><strong>Niche creators are ignored:</strong> Channels with under 100K subscribers rarely receive crowdsourced submissions.</span>
+            </li>
+            <li>
+              <span class="bullet-cross">✕</span>
+              <span><strong>Manual scrub fatigue:</strong> You still have to grab the progress bar and hunt for where the real video resumes.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="coldstart-card highlighted">
+          <span class="card-badge amber">AI SponsorBlock</span>
+          <h3 class="card-title">Automated Zero-Day Detection</h3>
+          <p class="card-desc">
+            The instant you load the page, the extension extracts timestamped captions from YouTube's player and routes them through Groq's high-speed inference engine.
+          </p>
+          <ul class="coldstart-features">
+            <li>
+              <span class="bullet-check">✓</span>
+              <span><strong>Protected at minute 1:</strong> Works the moment the creator hits publish. No human volunteer required.</span>
+            </li>
+            <li>
+              <span class="bullet-check">✓</span>
+              <span><strong>Shared Supabase Cache:</strong> When the first viewer's client analyzes the video, the timestamps are cached globally for all users.</span>
+            </li>
+            <li>
+              <span class="bullet-check">✓</span>
+              <span><strong>Dual Fallback:</strong> Simultaneously checks the SponsorBlock public database in parallel (&lt;150ms).</span>
+            </li>
+            <li>
+              <span class="bullet-check">✓</span>
+              <span><strong>Self-Correction:</strong> Clicking "Undo & Report" submits an instant downvote. 3 consensus downvotes removes bad segments.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive AI Playground -->
+    <section id="playground" class="container">
+      <div class="playground-section">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">Live Demonstration</div>
+          <h2 class="section-title" style="font-size: 1.8rem;">Test the Groq AI detection model</h2>
+          <p class="section-desc" style="margin: 0;">
+            Select a sample YouTube caption transcript and run the analyzer to see how boundaries, category tags, and confidence scores are calculated.
+          </p>
+        </div>
+
+        <!-- Presets -->
+        <div class="preset-selector">
+          <span class="preset-label">Sample Videos:</span>
+          <button class="preset-chip active" data-preset="ridge">Linus Tech Tips (Ridge Wallet Pitch)</button>
+          <button class="preset-chip" data-preset="dbrand">MKBHD (dbrand Grip Sponsor)</button>
+          <button class="preset-chip" data-preset="clean">Veritasium (Clean Technical Content)</button>
+        </div>
+
+        <div class="playground-grid">
+          <!-- Left: Transcript Input -->
+          <div class="code-panel">
+            <div class="panel-bar">
+              <span>RAW YOUTUBE CAPTION STREAM (JSON3)</span>
+              <span>fmt=json3</span>
+            </div>
+            <div class="transcript-preview" id="transcript-preview"></div>
+          </div>
+
+          <!-- Right: Groq Output -->
+          <div class="code-panel">
+            <div class="panel-bar">
+              <span>GROQ INFERENCE RESPONSE</span>
+              <span style="color: #38bdf8;">model: qwen/qwen3.8-27b</span>
+            </div>
+            <div class="analysis-output">
+              <pre><code id="analysis-output-code">// Click "Run AI Detection" to see JSON segment output</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="playground-actions">
+          <span class="run-stat-badge" id="stat-playground-tokens">Inference engine: Groq LPUs • Latency: ~600ms</span>
+          <button class="btn btn-outline-amber" id="btn-run-playground">
+            <span>⚡</span> Run AI Detection
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Architecture -->
+    <section id="architecture" class="tech-section container">
+      <div class="section-header">
+        <div class="section-tag">System Architecture</div>
+        <h2 class="section-title">How the extension executes under the hood</h2>
+        <p class="section-desc">
+          Engineered as a lightweight Chrome/Edge Manifest V3 extension with zero client-side overhead.
+        </p>
+      </div>
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <span class="tech-number">01 / CAPTION EXTRACTION</span>
+          <h3 class="tech-title">3-Layer Bridge Architecture</h3>
+          <p class="tech-body">
+            YouTube protects caption endpoints with Proof-of-Origin (<code>&pot=</code>) tokens. Our <code>MAIN</code> world bridge reuses tokens from player network timings, handles regional tracks via <code>&tlang=en</code>, and falls back to Innertube RPCs.
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <span class="tech-number">02 / INFERENCE ENGINE</span>
+          <h3 class="tech-title">Sub-Second Groq Qwen 3.8</h3>
+          <p class="tech-body">
+            Raw caption cues, description promo links, and chapters are compacted and evaluated by Groq running Qwen 3.8 27B in JSON mode at <code>temperature: 0.1</code> to extract exact start and end seconds.
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <span class="tech-number">03 / DISTRIBUTED CACHING</span>
+          <h3 class="tech-title">Supabase Edge Cache</h3>
+          <p class="tech-body">
+            Analyzed segments are saved to PostgreSQL. When you load a video, the extension executes a parallel lookup (&lt;150ms) to Supabase and the SponsorBlock public API. 99% of requests never invoke the AI model.
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <span class="tech-number">04 / CONFIDENCE TIERS</span>
+          <h3 class="tech-title">Tiered UX Decision Engine</h3>
+          <p class="tech-body">
+            Segments with &ge;80% confidence auto-skip instantly with an Undo toast. Segments between 55% and 79% show a manual "Skip Sponsor" prompt so you stay in total control.
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <span class="tech-number">05 / CONSENSUS VOTING</span>
+          <h3 class="tech-title">Community Self-Healing</h3>
+          <p class="tech-body">
+            Mistakes happen. Clicking "Undo & Report" seeks back to the start and writes a downvote via an atomic PostgreSQL RPC. Segments with &ge;3 downvotes and a 2:1 ratio are permanently hidden.
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <span class="tech-number">06 / ZERO TRACKING</span>
+          <h3 class="tech-title">Local Profile Storage</h3>
+          <p class="tech-body">
+            No telemetry, no analytics beacons, and no accounts. Your watch history never touches our servers. The extension only sends the public video ID and raw subtitle sentences.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Settings Replica -->
+    <section class="settings-showcase container">
+      <div class="settings-header">
+        <div>
+          <h3 class="settings-title">Extension Preferences</h3>
+          <p class="settings-sub">Configurable directly from the browser popup</p>
+        </div>
+        <span class="brand-badge">Client Storage</span>
+      </div>
+
+      <div class="toggle-item">
+        <div class="toggle-label">
+          <h4>Auto-Skip High Confidence Sponsors (&ge;80%)</h4>
+          <p>Instantly seeks to the end of verified sponsor segments and shows the Undo toast.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked class="interactive-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-item">
+        <div class="toggle-label">
+          <h4>SponsorBlock Crowdsourced Fallback</h4>
+          <p>Queries the public SponsorBlock API in parallel for instant coverage on older catalog videos.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked class="interactive-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-item">
+        <div class="toggle-label">
+          <h4>Skip Creator Self-Promotions & Merch</h4>
+          <p>Detects creator pitches for their own merchandise, Patreon, newsletters, and affiliate links.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked class="interactive-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="install" class="install-section container">
+      <div class="section-header">
+        <div class="section-tag">Installation</div>
+        <h2 class="section-title">Add to your browser in under 60 seconds</h2>
+        <p class="section-desc">
+          Available as an official verified Microsoft Edge Add-on or manual ZIP install for any Chromium browser.
+        </p>
+      </div>
+
+      <div class="install-tabs">
+        <button class="install-tab-btn active" data-tab="edge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 12.357c.046 6.368 5.158 11.536 11.528 11.643 6.474.11 11.954-4.887 12.39-11.341.04-.58-.396-1.077-.978-1.11-.58-.032-1.077.397-1.11.977-.384 5.67-5.19 10.05-10.887 9.954-5.59-.094-10.08-4.636-10.12-10.228-.04-5.69 4.49-10.354 10.18-10.457 4.542-.083 8.358 2.68 9.92 6.643.21.53.81.79 1.34.58.53-.21.79-.81.58-1.34C20.94 3.12 16.51-.1 11.442.002 5.093.13-.047 5.927 0 12.357z"/></svg>
+          Microsoft Edge (Official Store)
+        </button>
+        <button class="install-tab-btn" data-tab="chrome">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12s12-5.373 12-12c0-6.628-5.372-12-12-12zm-1.033 1.933a10.05 10.05 0 0 1 2.066 0 10.07 10.07 0 0 1 7.034 4.534l-4.55 7.882a4.4 4.4 0 0 0-4.55-4.534V1.933zm-2.066.654v7.882a4.4 4.4 0 0 0-2.275 3.934 4.4 4.4 0 0 0 .209 1.328L2.285 7.949A10.07 10.07 0 0 1 8.901 2.587zm3.099 7.013a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8zm-1.033 6.467a4.4 4.4 0 0 0 3.308 0l4.55 7.882A10.07 10.07 0 0 1 12 24.067a10.07 10.07 0 0 1-6.784-2.652l4.55-7.882z"/></svg>
+          Chrome / Brave / Opera (Manual .ZIP)
+        </button>
+      </div>
+
+      <!-- Edge Pane -->
+      <div class="install-pane active" id="pane-edge">
+        <div class="install-step-row">
+          <div class="step-circle">1</div>
+          <div class="step-content">
+            <h4>Install directly with one click</h4>
+            <p>
+              Open the official Microsoft Edge Add-ons store listing and click <strong>Get</strong> to add the extension directly to your browser.
+            </p>
+            <div style="margin-top: 14px;">
+              <a href="https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf" target="_blank" rel="noopener noreferrer" class="btn btn-edge btn-sm">
+                Open Edge Add-ons Listing →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chrome/Brave Pane -->
+      <div class="install-pane" id="pane-chrome">
+        <div class="install-step-row">
+          <div class="step-circle">1</div>
+          <div class="step-content">
+            <h4>Download and extract the zip archive</h4>
+            <p>
+              Download <a href="downloads/ai-sponsorblock-edge.zip" download style="color: #fbbf24; font-weight: 600;">ai-sponsorblock-edge.zip</a> and unpack it to a folder on your drive.
+            </p>
+          </div>
+        </div>
+
+        <div class="install-step-row">
+          <div class="step-circle">2</div>
+          <div class="step-content">
+            <h4>Open Developer Mode in your browser</h4>
+            <p>
+              In Google Chrome, navigate to <code>chrome://extensions</code> (or <code>brave://extensions</code> in Brave). Toggle on <strong>Developer mode</strong> in the top-right corner.
+            </p>
+          </div>
+        </div>
+
+        <div class="install-step-row">
+          <div class="step-circle">3</div>
+          <div class="step-content">
+            <h4>Click "Load unpacked"</h4>
+            <p>
+              Click <strong>Load unpacked</strong> and select the unzipped directory containing <code>manifest.json</code>. Navigate to any YouTube video to begin skipping.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section container">
+      <div class="section-header">
+        <div class="section-tag">FAQ</div>
+        <h2 class="section-title">Common questions</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-card">
+          <button class="faq-trigger">
+            <span>Does this violate YouTube terms or risk my Google account?</span>
+            <svg class="faq-icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-body">
+            No. AI SponsorBlock operates strictly within the client browser by seeking the HTML5 video element forward past sponsor timestamps. It does not tamper with YouTube video ad-serving, modify account data, or inject unauthorized player tokens.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button class="faq-trigger">
+            <span>What happens if a video has no captions or subtitles available?</span>
+            <svg class="faq-icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-body">
+            Over 95% of YouTube videos have auto-generated captions (ASR) processed within 5-10 minutes of upload. In the rare case where no captions exist, the extension parses video chapters and description sponsor links, while simultaneously querying the public SponsorBlock database as a fallback.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button class="faq-trigger">
+            <span>Do I need to sign up for Groq or host my own Supabase server?</span>
+            <svg class="faq-icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-body">
+            No configuration is necessary. The extension routes requests through our production Supabase Edge Function connected to Groq. It works immediately upon installation without requiring API keys, login accounts, or subscription fees.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button class="faq-trigger">
+            <span>How does the community downvoting system prevent bad skips?</span>
+            <svg class="faq-icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-body">
+            Whenever a segment skips, a 6-second toast appears with an "Undo & Report" button. Clicking it seeks back to where you were and logs an anonymous downvote in Supabase. Segments with 3 or more downvotes where downvotes exceed double the upvotes are suppressed permanently.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button class="faq-trigger">
+            <span>Can I disable skipping for creator self-promos or merch pitches?</span>
+            <svg class="faq-icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-body">
+            Yes. The popup includes individual toggles for third-party sponsors vs creator self-promotions. If you enjoy hearing creator channel updates or merch announcements, you can keep them enabled.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final Call to Action -->
+    <section class="cta-section container">
+      <div class="cta-box">
+        <h2 class="cta-title">Stop wasting time on creator pitches</h2>
+        <p class="cta-desc">
+          Get real-time, zero-day sponsorship skipping on every video you watch. Free, open source, and lightweight.
+        </p>
+        <div class="cta-buttons">
+          <a href="https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf" target="_blank" rel="noopener noreferrer" class="btn btn-edge btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M0 12.357c.046 6.368 5.158 11.536 11.528 11.643 6.474.11 11.954-4.887 12.39-11.341.04-.58-.396-1.077-.978-1.11-.58-.032-1.077.397-1.11.977-.384 5.67-5.19 10.05-10.887 9.954-5.59-.094-10.08-4.636-10.12-10.228-.04-5.69 4.49-10.354 10.18-10.457 4.542-.083 8.358 2.68 9.92 6.643.21.53.81.79 1.34.58.53-.21.79-.81.58-1.34C20.94 3.12 16.51-.1 11.442.002 5.093.13-.047 5.927 0 12.357z"/>
+            </svg>
+            Add to Microsoft Edge
+          </a>
+          <a href="downloads/ai-sponsorblock-edge.zip" download class="btn btn-secondary btn-lg">
+            <span>↓</span> Download .ZIP (Load Unpacked)
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a href="#" class="footer-brand">
+        <img src="assets/icon-32.png" alt="AI SponsorBlock" width="22" height="22" style="border-radius: 4px;" />
+        <span>AI SponsorBlock</span>
+      </a>
+
+      <div class="footer-nav">
+        <a href="https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf" target="_blank" rel="noopener noreferrer">Edge Store Listing</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#install">Install Guide</a>
+      </div>
+
+      <div>
+        <span>Manifest V3 • Groq & Supabase</span>
+      </div>
+    </div>
+
+    <div class="footer-disclaimer">
+      Disclaimer: AI SponsorBlock is an independent open-source project and is not affiliated with, endorsed by, or sponsored by YouTube™, Google LLC, or Microsoft Corporation. YouTube is a registered trademark of Google LLC.
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
