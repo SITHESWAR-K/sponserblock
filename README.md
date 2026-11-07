@@ -2,6 +2,10 @@
 
 Automatically detects and skips in-video creator sponsorships on YouTube — including **brand-new uploads** with zero crowdsourced data — powered by **Groq (`qwen/qwen3.8-27b`)**, **Supabase PostgreSQL**, and **SponsorBlock fallback**.
 
+- 🌐 **Live Website & Interactive Demo:** [https://sponsorblockyt.web.app](https://sponsorblockyt.web.app)
+- 🧩 **Microsoft Edge Add-ons Store:** [Install AI SponsorBlock on Edge](https://microsoftedge.microsoft.com/addons/detail/ai-sponsorblock-%E2%80%94-sponsor/fgefilonebjmccnkkneijhiinmbdihgf)
+- 🔒 **Privacy Policy:** [https://sponsorblockyt.web.app/privacy](https://sponsorblockyt.web.app/privacy)
+
 ---
 
 ## Architecture Overview
