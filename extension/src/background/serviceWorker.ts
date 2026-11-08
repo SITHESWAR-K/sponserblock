@@ -104,7 +104,7 @@ async function fetchSponsorBlockSegments(videoId: string): Promise<SponsorSegmen
   }
 }
 
-async function handleLookupVideoSegments(videoId: string) {
+async function handleLookupVideoSegments(videoId: string, hasPaidPromotion = false) {
   const settings = await getSettings();
 
   const [supabaseOutcome, sbOutcome] = await Promise.allSettled([
@@ -151,7 +151,8 @@ async function handleLookupVideoSegments(videoId: string) {
   }
 
   // 3. If Supabase already analyzed this video and confirmed it has NO sponsors, don't re-analyze
-  if (supabaseData?.analyzed && supabaseData.hasSponsors === false) {
+  //    UNLESS YouTube explicitly flagged paid promotion on this video (preventing false-negative lock-in)
+  if (supabaseData?.analyzed && supabaseData.hasSponsors === false && !hasPaidPromotion) {
     return {
       needsAnalysis: false,
       source: supabaseData.source || 'groq_ai',
@@ -160,7 +161,7 @@ async function handleLookupVideoSegments(videoId: string) {
     };
   }
 
-  // 4. Cache miss on both Supabase and SponsorBlock -> trigger Groq caption analysis
+  // 4. Cache miss on both Supabase and SponsorBlock -> trigger caption analysis
   return {
     needsAnalysis: true,
     segments: [],
@@ -227,7 +228,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'LOOKUP_VIDEO_SEGMENTS') {
-    handleLookupVideoSegments(message.videoId)
+    handleLookupVideoSegments(message.videoId, Boolean(message.hasPaidPromotion))
       .then((res) => sendResponse(res))
       .catch((err) =>
         sendResponse({

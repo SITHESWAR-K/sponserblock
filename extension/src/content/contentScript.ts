@@ -187,10 +187,15 @@ async function processVideo(videoId: string, forceRefresh = false): Promise<void
 
   try {
     if (!forceRefresh) {
+      const domHasPaidPromo =
+        typeof document !== 'undefined' &&
+        Boolean(document.querySelector('.ytp-paid-content-overlay-link'));
+
       // Step 1: Parallel fast lookup (Supabase + SponsorBlock) in background serviceWorker
       const lookupRes = await chrome.runtime.sendMessage({
         type: 'LOOKUP_VIDEO_SEGMENTS',
         videoId,
+        hasPaidPromotion: domHasPaidPromo,
       });
 
       if (seq !== activeProcessSeq || currentVideoId !== videoId) return;
@@ -207,13 +212,13 @@ async function processVideo(videoId: string, forceRefresh = false): Promise<void
       }
     }
 
-    // Step 2: Cache miss (brand-new video) -> Extract captions from YouTube player & run Groq AI
+    // Step 2: Cache miss (brand-new video) -> Extract captions from YouTube player & run NVIDIA Nemotron / Groq AI
     setVideoStatus({
       ...currentVideoStatus,
       videoId,
       status: 'analyzing',
     });
-    overlay.showStatusPill('🧠 AI Scanning Captions (Qwen 3.8)...');
+    overlay.showStatusPill('🧠 AI Scanning Captions (Nemotron 3.5 120B)...');
 
     // Wait briefly for YouTube player DOM & ytInitialPlayerResponse to settle on SPA navigation
     await new Promise((r) => setTimeout(r, 600));

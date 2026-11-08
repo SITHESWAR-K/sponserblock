@@ -8,12 +8,13 @@ describe('Backend Express API & Live Groq + Supabase Integration', () => {
   const sbVideoId = 'test_vid_sb_03';
   const noCaptionsVideoId = `test_nocap_${Date.now().toString(36).slice(-6)}`;
 
-  it('GET /api/health returns ok and qwen/qwen3.8-27b model', async () => {
+  it('GET /api/health returns ok and nvidia/nemotron-3.5-super-vl-120b-a12b model', async () => {
     const res = await request(app).get('/api/health');
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ok');
-    expect(res.body.model).toBe('qwen/qwen3.8-27b');
+    expect(res.body.model).toBe('nvidia/nemotron-3.5-super-vl-120b-a12b');
     expect(res.body.supabaseConfigured).toBe(true);
+    expect(res.body.nvidiaConfigured).toBe(true);
     expect(res.body.groqConfigured).toBe(true);
   });
 
@@ -79,7 +80,7 @@ describe('Backend Express API & Live Groq + Supabase Integration', () => {
     expect(analyzeRes.body.videoId).toBe(testVideoId);
     expect(analyzeRes.body.analyzed).toBe(true);
     expect(analyzeRes.body.hasSponsors).toBe(true);
-    expect(analyzeRes.body.model).toBe('qwen/qwen3.8-27b');
+    expect(analyzeRes.body.model).toBe('nvidia/nemotron-3.5-super-vl-120b-a12b');
     expect(analyzeRes.body.duration).toBe(420);
     expect(Array.isArray(analyzeRes.body.segments)).toBe(true);
     expect(analyzeRes.body.segments.length).toBeGreaterThanOrEqual(1);

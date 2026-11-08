@@ -11,6 +11,14 @@ const zipPath = path.join(__dirname, 'ai-sponsorblock-edge.zip');
 console.log('📦 Step 1: Building extension into dist/...');
 execSync('node build.mjs', { cwd: __dirname, stdio: 'inherit' });
 
+// Validate store manifest constraints (description <= 132 chars, name <= 75 chars)
+const manifest = JSON.parse(fs.readFileSync(path.join(distDir, 'manifest.json'), 'utf8'));
+if ((manifest.description || '').length > 132) {
+  throw new Error(
+    `manifest.json description length (${manifest.description.length}) exceeds Edge/Chrome store limit of 132 characters!`
+  );
+}
+
 // 2. Remove existing zip if any
 if (fs.existsSync(zipPath)) {
   fs.unlinkSync(zipPath);

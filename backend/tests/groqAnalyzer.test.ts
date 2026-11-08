@@ -5,6 +5,7 @@ import {
   compactTranscript,
   shrinkUserPromptForRetry,
   extractDescriptionHints,
+  extractBrandKeywordsFromDescription,
   detectSponsorFromChapters,
   extractJsonFromModelOutput,
   validateAndNormalizeSegments,
@@ -217,6 +218,28 @@ Follow me on Mastodon
       expect(segments[0].sponsorName).toBe('Brilliant.org');
       expect(segments[0].source).toBe('chapters');
     });
+    it('extracts brand keywords from description and detects chapters matching description brands', () => {
+      const desc = `
+        Check out our sponsor https://surfshark.deals/tech and https://factor75.com/blurry50
+        Follow me on https://twitter.com/tech and https://youtube.com/@tech
+      `;
+      const brands = extractBrandKeywordsFromDescription(desc);
+      expect(brands).toContain('surfshark');
+      expect(brands).toContain('factor');
+      expect(brands).not.toContain('twitter');
+      expect(brands).not.toContain('youtube');
+
+      const chapters = [
+        { title: 'Intro', startTime: 0 },
+        { title: 'Surfshark', startTime: 60 },
+        { title: 'Benchmarks', startTime: 125 },
+      ];
+      const segments = detectSponsorFromChapters(chapters, 400, desc);
+      expect(segments).toHaveLength(1);
+      expect(segments[0].startTime).toBe(60);
+      expect(segments[0].endTime).toBe(125);
+      expect(segments[0].sponsorName).toBe('Surfshark');
+    });
   });
 
   describe('extractJsonFromModelOutput', () => {
@@ -335,17 +358,17 @@ The user wants sponsor segments. Looking at [15.2 - 98.4], Surfshark is promoted
       expect(res.content).toContain('"hasSponsors":true');
     });
 
-    it('immediately fails over from qwen/qwen3.8-27b to qwen/qwen3-32b on HTTP 404 model_not_found without wasting retries', async () => {
+    it('immediately fails over from nvidia/nemotron-3.5-super-vl-120b-a12b to openai/gpt-oss-120b on HTTP 404 model_not_found without wasting retries', async () => {
       const requestedModels: string[] = [];
       vi.spyOn(globalThis, 'fetch').mockImplementation(async (_url, init) => {
         const body = JSON.parse(String(init?.body || '{}'));
         requestedModels.push(body.model);
 
-        if (body.model === 'qwen/qwen3.8-27b') {
+        if (body.model === 'nvidia/nemotron-3.5-super-vl-120b-a12b') {
           return new Response(
             JSON.stringify({
               error: {
-                message: 'The model `qwen/qwen3.8-27b` does not exist or you do not have access to it.',
+                message: 'The model `nvidia/nemotron-3.5-super-vl-120b-a12b` is temporarily unavailable.',
                 code: 'model_not_found',
               },
             }),
@@ -370,16 +393,19 @@ The user wants sponsor segments. Looking at [15.2 - 98.4], Surfshark is promoted
 
       const res = await callGroqWithRetry({
         apiKey: 'test-key',
-        primaryModel: 'qwen/qwen3.8-27b',
+        primaryModel: 'nvidia/nemotron-3.5-super-vl-120b-a12b',
         systemPrompt: 'sys',
         userPrompt: 'usr',
         maxRetries: 3,
         baseDelayMs: 5,
       });
 
-      expect(requestedModels).toEqual(['qwen/qwen3.8-27b', 'qwen/qwen3-32b']);
-      expect(res.actualModel).toBe('qwen/qwen3-32b');
-      expect(res.usedModel).toBe('qwen/qwen3.8-27b');
+      expect(requestedModels).toEqual([
+        'nvidia/nemotron-3.5-super-vl-120b-a12b',
+        'openai/gpt-oss-120b',
+      ]);
+      expect(res.actualModel).toBe('openai/gpt-oss-120b');
+      expect(res.usedModel).toBe('nvidia/nemotron-3.5-super-vl-120b-a12b');
       expect(res.content).toContain('Skillshare');
     });
 

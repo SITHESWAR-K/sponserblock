@@ -189,7 +189,8 @@ export async function getOrAnalyzeVideo(
 
   if (!forceRefresh) {
     const existing = await getVideoSegments(videoId);
-    if (existing.analyzed) {
+    // If cached as clean (hasSponsors=false) but YouTube explicitly flagged paid promotion, re-analyze
+    if (existing.analyzed && (existing.hasSponsors || !input.hasPaidPromotion)) {
       return existing;
     }
   }

@@ -7,7 +7,10 @@ import {
   saveVideoAnalysis,
   voteOnSegment,
 } from './services/supabaseService.js';
-import { validateAndNormalizeSegments } from './services/groqAnalyzer.js';
+import {
+  DEFAULT_AI_MODEL,
+  validateAndNormalizeSegments,
+} from './services/groqAnalyzer.js';
 
 dotenv.config();
 
@@ -22,9 +25,13 @@ app.use(express.json({ limit: '5mb' }));
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
-    model: process.env.GROQ_MODEL || 'qwen/qwen3.8-27b',
+    model:
+      process.env.NVIDIA_MODEL ||
+      process.env.GROQ_MODEL ||
+      DEFAULT_AI_MODEL,
     supabaseConfigured: Boolean(process.env.SUPABASE_URL),
-    groqConfigured: Boolean(process.env.GROQ_API_KEY),
+    nvidiaConfigured: Boolean(process.env.NVIDIA_API_KEY),
+    groqConfigured: Boolean(process.env.GROQ_API_KEY || process.env.NVIDIA_API_KEY),
     timestamp: new Date().toISOString(),
   });
 });
